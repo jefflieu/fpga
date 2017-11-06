@@ -1,2 +1,4 @@
 # fpga
 Collection of not-so-difficult HDL cores but FPGA vendors charge arm and leg for them ! :D
+- 8b10b Encoder Decoder written in Verilog
+- Fast CRC32 bit calculation with 256-bit wide bus
