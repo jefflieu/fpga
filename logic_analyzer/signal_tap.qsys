@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system name="$${FILENAME}">
+ <component
+   name="$${FILENAME}"
+   displayName="$${FILENAME}"
+   version="1.0"
+   description=""
+   tags="INTERNAL_COMPONENT=true"
+   categories="System" />
+ <parameter name="bonusData"><![CDATA[bonusData 
+{
+   element signaltap_ii_logic_analyzer_0
+   {
+      datum _sortIndex
+      {
+         value = "0";
+         type = "int";
+      }
+   }
+}
+]]></parameter>
+ <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
+ <parameter name="device" value="10M08DAF484C8GES" />
+ <parameter name="deviceFamily" value="MAX 10" />
+ <parameter name="deviceSpeedGrade" value="8" />
+ <parameter name="fabricMode" value="QSYS" />
+ <parameter name="generateLegacySim" value="false" />
+ <parameter name="generationId" value="0" />
+ <parameter name="globalResetBus" value="false" />
+ <parameter name="hdlLanguage" value="VERILOG" />
+ <parameter name="hideFromIPCatalog" value="true" />
+ <parameter name="lockedInterfaceDefinition" value="" />
+ <parameter name="maxAdditionalLatency" value="1" />
+ <parameter name="projectName">quartus_logic_analyzer.qpf</parameter>
+ <parameter name="sopcBorderPoints" value="false" />
+ <parameter name="systemHash" value="0" />
+ <parameter name="testBenchDutName" value="" />
+ <parameter name="timeStamp" value="0" />
+ <parameter name="useTestBenchNamingPattern" value="false" />
+ <instanceScript></instanceScript>
+ <interface
+   name="acq_clk"
+   internal="signaltap_ii_logic_analyzer_0.acq_clk"
+   type="clock"
+   dir="end">
+  <port name="acq_clk" internal="acq_clk" />
+ </interface>
+ <interface
+   name="storage_qualifier"
+   internal="signaltap_ii_logic_analyzer_0.storage_qualifier"
+   type="conduit"
+   dir="end">
+  <port name="storage_enable" internal="storage_enable" />
+ </interface>
+ <interface
+   name="tap"
+   internal="signaltap_ii_logic_analyzer_0.tap"
+   type="conduit"
+   dir="end">
+  <port name="acq_data_in" internal="acq_data_in" />
+  <port name="acq_trigger_in" internal="acq_trigger_in" />
+ </interface>
+ <module
+   name="signaltap_ii_logic_analyzer_0"
+   kind="altera_signaltap_ii_logic_analyzer"
+   version="17.0"
+   enabled="1"
+   autoexport="1">
+  <parameter name="device_family" value="MAX 10" />
+  <parameter name="gui_num_segments" value="2" />
+  <parameter name="gui_ram_type" value="AUTO" />
+  <parameter name="gui_sq" value="Input port" />
+  <parameter name="gui_trigger_out_enabled" value="false" />
+  <parameter name="gui_use_segmented" value="false" />
+  <parameter name="sld_counter_pipeline" value="1" />
+  <parameter name="sld_data_bits" value="8" />
+  <parameter name="sld_enable_advanced_trigger" value="0" />
+  <parameter name="sld_incremental_routing" value="0" />
+  <parameter name="sld_node_crc_bits" value="32" />
+  <parameter name="sld_node_info" value="806383104" />
+  <parameter name="sld_pipeline_factor" value="2" />
+  <parameter name="sld_ram_pipeline" value="2" />
+  <parameter name="sld_sample_depth" value="16384" />
+  <parameter name="sld_storage_qualifier_gap_record" value="0" />
+  <parameter name="sld_trigger_bits" value="8" />
+  <parameter name="sld_trigger_in_enabled" value="0" />
+  <parameter name="sld_trigger_level" value="2" />
+  <parameter name="sld_trigger_level_pipeline" value="1" />
+  <parameter name="sld_trigger_pipeline" value="2" />
+ </module>
+ <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
+ <interconnectRequirement for="$system" name="qsys_mm.enableEccProtection" value="FALSE" />
+ <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
+ <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
+</system>
