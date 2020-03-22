@@ -1,4 +1,4 @@
-set SIMLIBPATH {/fpgasw/altera/12.1sp1/quartus/eda/sim_lib/}
+set SIMLIBPATH {D:/intelFPGA_lite/18.0/quartus/eda/sim_lib/}
 puts $SIMLIBPATH
 vlog $SIMLIBPATH/220model.v
 vlog $SIMLIBPATH/altera_mf.v

@@ -2,16 +2,11 @@
 
 module mFPMultVerifier;
 
-parameter pPrecision=2;
-parameter pManW = 52;
-parameter pExpW = 11;
+parameter pPrecision=0;
+parameter pManW = (pPrecision==2)?52:(pPrecision==1?23:10);
+parameter pExpW = (pPrecision==2)?11:(pPrecision==1?8:5);
 parameter pPipeline=5;
-
-parameter pDouble1 		= 64'h3FF_0_0000_0000_0000;
-parameter pDouble1p5 	= 64'h3FF_8_0000_0000_0000;
-parameter pSingle1 		= 32'h3F80_0000;
-parameter pSingle1p5	= 32'h3FC0_0000;
-parameter pSingle2		= 32'h4000_0000;
+parameter pTestVector = (pPrecision==2)?"Mult64Data.txt":(pPrecision==1?"Mult32Data.txt":"Mult16Data.txt");
 
 reg 	[pExpW+pManW:0] rv_A;
 reg 	[pExpW+pManW:0] rv_B;
@@ -22,6 +17,7 @@ wire 	[pExpW+pManW:0] wv_FltB;
 wire 	[pExpW+pManW:0] wv_FltC;
 
 reg [pExpW+pManW:0] rv_FltC_D[0:pPipeline-1];
+reg [pExpW+pManW:0] ref_data;
 
 reg r_Clk;
 reg r_ARst;
@@ -72,17 +68,18 @@ wire w_Inf,w_NaN;
 	always@(posedge r_Clk)
 		begin
 			r_Dv <= r_GenEn;
-			//rv_FltC_D[0] <= wv_FltC;
+			rv_FltC_D[0] <= wv_FltC;
 			for(I=1;I<10;I=I+1)
 				rv_FltC_D[I]<=rv_FltC_D[I-1];
-			ModelMultiplier(wv_FltA,wv_FltB,rv_FltC_D[0]);		
+			//ModelMultiplier(wv_FltA,wv_FltB,rv_FltC_D[0]);		
+			ModelMultiplier(wv_FltA,wv_FltB,ref_data);		
 		end
 	
 	mFloatLoader #(.pPrecision(pPrecision),
 			.pWidthExp(pExpW),
 			.pWidthMan(pManW),
 			.pDataCol(3),
-			.pDataFile("Mult64Data.txt")) u0FPGen
+			.pDataFile(pTestVector)) u0FPGen
 	(
 	.i_Clk(r_Clk),
 	.i_ClkEn(r_GenEn),
@@ -132,7 +129,7 @@ wire w_Inf,w_NaN;
 					else 
 						begin
 							$display("INFINITY CHECK FAILED");	
-							//$stop;		
+							$stop;		
 						end
 				end
 				else if (w_NaN)
