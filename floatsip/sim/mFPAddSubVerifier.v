@@ -2,10 +2,11 @@
 
 module mFPAddSubVerifier;
 
-parameter pPrecision=1;
-parameter pManW = 23;
-parameter pExpW = 8;
+parameter pPrecision=0;
+parameter pManW = (pPrecision==2)?52:(pPrecision==1?23:10);
+parameter pExpW = (pPrecision==2)?11:(pPrecision==1?8:5);
 parameter pPipeline=8;
+parameter pTestVector = (pPrecision==2)?"AddSub64Data.txt":(pPrecision==1?"AddSub32Data.txt":"AddSub16Data.txt");
 
 reg 	[pExpW+pManW:0] rv_A;
 reg 	[pExpW+pManW:0] rv_B;
@@ -52,17 +53,17 @@ reg rEOF;
 		begin
 			r_Dv <= r_GenEn;
 			
-			//rv_FltC_D[0] <= wv_FltC;			
+			rv_FltC_D[0] <= wv_FltC;			
 			for(I=1;I<10;I=I+1)
 				rv_FltC_D[I]<=rv_FltC_D[I-1];
-			ModelFloatAddSub(wv_FltA,wv_FltB,rv_FltC_D[0],wv_FltID[31]);
+			//ModelFloatAddSub(wv_FltA,wv_FltB,rv_FltC_D[0],wv_FltID[31]);
 		end
 	
 	mFloatLoader #(.pPrecision(pPrecision),
 			.pWidthExp(pExpW),
 			.pWidthMan(pManW),
 			.pDataCol(3),
-			.pDataFile("AddSub32Corner.txt")) u0FPGen
+			.pDataFile(pTestVector)) u0FPGen
 	(
 	.i_Clk(r_Clk),
 	.i_ClkEn(r_GenEn),
@@ -70,32 +71,33 @@ reg rEOF;
 	.ov_FltID(wv_FltID),
 	.ov_FltOutA(wv_FltA),
 	.ov_FltOutB(wv_FltB),
-	.ov_FltOutC());
-			
-	mFPAddSub #(.pTechnology("ALTERA"), 
-			.pFamily("ARRIA II GX"),
-			.pPrecision(pPrecision),
-			.pWidthExp(pExpW),
-			.pWidthMan(pManW),				
-			.pPipelineBarrelShifter(1),
-			.pPipelineNormalizer(2)
-		) u0DUT (
-	.iv_InputA	(wv_FltA),		//Input A following IEEE754 binary format of single or double precision
-	.iv_InputB	(wv_FltB),		//Input B following IEEE754 binary format of single or double precision
-	.o4_InputID	(),				//Input ID, only valid from 1 to 7, a 0 means Not valid input, to keep track of input and output
-	.i_Dv(r_Dv),
-	.i_SubNotAdd(wv_FltID[31]),
-	.ov_Result		(wv_C),				//Product of A and B
-	.o4_OutputID		(w4_OutputID),		//Output ID, to track which operation is valid at the output
-	.o_Overflow		(w_Of),
-	.o_Underflow	(w_Uf),
-	.o_NAN			(),
-	.o_PINF			(),
-	.o_NINF			(),	
-	.i_ClkEn		(1'b1),
-	.i_Clk			(r_Clk),			//Clock	
-	.i_ARst			(r_ARst)			//Async reset
-	);
+	.ov_FltOutC(wv_FltC));
+
+	mFPAddSub #                (.pTechnology("ALTERA"), 
+			.pFamily               ("ARRIA II GX"        ),
+			.pPrecision            (pPrecision           ),
+			.pWidthExp             (pExpW                ),
+			.pWidthMan             (pManW                ),				
+			.pPipelineBarrelShifter(1                    ),
+			.pPipelineNormalizer   (2                    )
+		                                               ) 
+  u0DUT (
+	.iv_InputA	               (wv_FltA              ),		    //Input A following IEEE754 binary format of single or double precision
+	.iv_InputB	               (wv_FltB              ),		    //Input B following IEEE754 binary format of single or double precision
+	.o4_InputID	               (                     ),				//Input ID, only valid from 1 to 7, a 0 means Not valid input, to keep track of input and output
+	.i_Dv                      (r_Dv                 ),
+	.i_SubNotAdd               (wv_FltID[31]         ),
+	.ov_Result		             (wv_C                 ),				//Sum of A and B
+	.o4_OutputID		           (w4_OutputID          ),		    //Output ID, to track which operation is valid at the output
+	.o_Overflow		             (w_Of                 ),
+	.o_Underflow	             (w_Uf                 ),
+	.o_NAN			               (                     ),
+	.o_PINF			               (                     ),
+	.o_NINF			               (                     ),	
+	.i_ClkEn		               (1'b1                 ),
+	.i_Clk			               (r_Clk                ),			  //Clock	
+	.i_ARst			               (r_ARst               )			  //Async reset
+	                                                 );
 
 	//Checker
 	assign w_Inf = (rv_FltC_D[pPipeline-1][pManW+pExpW-1:pManW]=={pExpW{1'b1}} && rv_FltC_D[pPipeline-1][pManW-1:0]=={pManW{1'b0}})?1'b1:1'b0;
