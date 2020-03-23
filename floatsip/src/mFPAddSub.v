@@ -8,7 +8,7 @@ Description	:
 		pWidthMan	: No effect when pPrecision=1 or 2, else specify the width of Mantissa Part of Float
 		The size of The Floating point number = pWidthExp+pWidthMan+1
 		pWidthExp and pWidthMan do not need to follow IEEE754 documents. i.e you can specify pWidthExp=8, pWidthMan=31 to have a 40 bit number
-		pPipeline	: Minimum pipeline is 3
+		pPipeline	: Minimum pipeline is 8
 	
 Remarks		:
 		Double Precision and Custom Precision have not been tested
@@ -41,12 +41,12 @@ module mFPAddSub #(parameter pTechnology="ALTERA",
 		)  (
 	input 	[pExpW+pManW:0] iv_InputA,		//Input A following IEEE754 binary format of single or double precision
 	input 	[pExpW+pManW:0] iv_InputB,		//Input B following IEEE754 binary format of single or double precision
-	output	[3:0]		 	o4_InputID,		//Input ID, only valid from 1 to 7, a 0 means Not valid input, to keep track of input and output
+	output	[3:0]		 	o4_InputID,		      //Input ID, only valid from 1 to 7, a 0 means Not valid input, to keep track of input and output
 	input	i_Dv,
 	input	i_SubNotAdd,
 	
-	output 	[pExpW+pManW:0] ov_Result,	//Product of A and B
-	output	[3:0]		 	o4_OutputID,		//Output ID, to track which operation is valid at the output
+	output 	[pExpW+pManW:0] ov_Result,	  //Sum of A and B
+	output	[3:0]		 	o4_OutputID,		    //Output ID, to track which operation is valid at the output
 	output	o_Overflow,
 	output	o_Underflow,
 	output	o_NAN,
@@ -54,8 +54,8 @@ module mFPAddSub #(parameter pTechnology="ALTERA",
 	output	o_NINF,
 	
 	input	i_ClkEn,
-	input 	i_Clk,							//Clock	
-	input	i_ARst						//Async reset
+	input 	i_Clk,							          //Clock	
+	input	i_ARst						              //Async reset
 );
 	localparam pSigExt = 2;
 	localparam pSigniW 	= pManW+1;
@@ -495,10 +495,10 @@ module mFPAddSub #(parameter pTechnology="ALTERA",
 		end else if(i_ClkEn)
 		begin		
 		
-			if(w3_StatAOut==st_SUBN||w3_StatBOut==st_SUBN)
-				rABUdflow<=1'b1;
-			else 
-				rABUdflow<=1'b0;
+			//if(w3_StatAOut==st_SUBN||w3_StatBOut==st_SUBN)
+			//	rABUdflow<=1'b1;
+			//else 
+      rABUdflow<=1'b0;
 				
 			if(((w3_StatAOut==st_INF)&&(w3_StatBOut==st_NORM))||
 					((w3_StatBOut==st_INF)&&(w3_StatAOut==st_NORM)))
